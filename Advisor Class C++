@@ -1,0 +1,171 @@
+// CS 252 | Project 7
+// Name: Oscar Cabrera
+// Date: 04/14/2023
+
+#include <iostream>
+#include <list>
+#include <vector>
+#include <fstream>
+#include <iomanip>
+using namespace std;
+
+/*
+This code shows multiple inheritance. There's a child class, CS_Major,
+that inherits from two separate classes (i.e. two parents), Person and
+Student. Person and Student are completely separate classes and not related
+at all. CS_Major inherits from both.
+
+      Person        Student
+         \          /
+          \        /
+           \      /
+           CS_Major
+*/
+
+// Person is a completely standalone class
+class Person {
+private:
+    string name;
+    int age;
+    int ssn;
+public:
+    Person(string nm, int a, int s)    { name = nm; age = a, ssn = s; }
+    string getName()      { return name; }
+    int getAge()          { return age; }
+    int getSsn()          {return ssn;}
+};
+
+// Student is a completely standalone class
+class Student {
+private:
+    string studentID;
+    double gpa;
+    string advisor;
+public:
+    Student(string st, double g, string ad)  { studentID = st; gpa = g; advisor = ad;}
+    string getStudentID()          { return studentID; }
+    double getGpa()                { return gpa; }
+    string getAdvisor()            { return advisor; }
+};
+
+// CS_Major inherits from *BOTH* Person and Student
+// note the class header includes both parent classes
+class CS_Major : public Person, public Student {  // BOTH parent classes listed
+private:
+    string laptopNR;
+
+public:
+    // note the parameter constructor's syntax. It passes values to *BOTH*
+    // of the parent classes, Person and Student. Trace through how the
+    // variables are passed.
+    CS_Major(string nm, int a, int s, string st, double g, string ad, string lap) :
+        Person(nm, a, s), Student(st, g, ad) { 
+        laptopNR = lap;
+    }
+    string getLaptop()            {return laptopNR;}
+    void print();
+};
+
+CS_Major gen_major(string [], string []);
+void print(list<CS_Major>);
+
+int main() {
+    srand(time(0));
+    list<CS_Major> major;
+
+    ifstream fin("namesXS.txt");
+    ifstream fin2("advisors.txt");
+
+    string namesXS[45]; // Names size
+    string advisors[6]; // Advisor size
+
+    // Input file for namesXS
+    int i = 0;
+    while(fin >> namesXS[i++]){
+        
+    }
+
+    // Input file for advisors
+    i = 0;
+    while(getline(fin2, advisors[i++])){
+        
+    }
+    fin.close();
+    fin2.close();
+
+    // Random numbers between 12-25
+    int randNum = rand() % (25 - 12 + 1) + 12;
+
+    // Random numbers generated for namesXS and advisors files
+    for(int i = 0; i < randNum; i++){
+        major.push_back(gen_major(namesXS, advisors));
+    }
+    print(major); // Print list
+    
+
+    return 0;
+}
+
+// Function that returns a properly populated CS_Major object
+CS_Major gen_major(string randName[], string advisor[]){
+    int randN = rand() % (44 - 0 + 1) + 0;  // random names in the file
+    int randA = rand() % (50 - 18 + 1) + 18; // Random age
+    int randS = rand() % (999999999 - 1111111111 + 1) + 1111111111; // Rnadom SSN
+    
+    string name = randName[randN];
+    
+    double randGPA = (rand() % (400 - 0 + 1) + 0) / (double) 100; // Random double calculation
+    
+    int randAd = rand() % (5 - 0 + 1) + 0; // Random advisor
+    string advisorN = advisor[randAd];
+
+    int randSt = rand() % (6 - 5 + 1) + 5; // random digits studentID
+    string studentID = "";
+    for(int i = 0; i < randSt; i++){
+        int randDigits = rand() % (9 - 0 + 1) + 0; // 0-9 digits
+        studentID += to_string(randDigits);
+    }
+    studentID += name[0]; // First letter for studentID
+    string letters = "ABCDEFGHIJKLMNOP";
+
+    string laptop = ""; // Empty laptop
+    int randDigits = rand() % (9 - 0 + 1) + 0;
+    laptop += to_string(randDigits); // Concatanation random digits to laptop
+
+    // Concatanation random letters to laptop
+    int randLetter = rand() % (15 - 0 + 1) + 0;
+    laptop += letters[randLetter];
+
+    // Concatanation random digits to laptop
+    randDigits = rand() % (9 - 0 + 1) + 0;
+    laptop += to_string(randDigits);
+
+    // Concatanation random digits to laptop again
+    randDigits = rand() % (9 - 0 + 1) + 0;
+    laptop += to_string(randDigits);
+
+    // Concatanation random letters to laptop again
+    randLetter = rand() % (15 - 0 + 1) + 0;
+    laptop += letters[randLetter];
+
+    return CS_Major(name, randA, randS, studentID, randGPA, advisorN, laptop);
+   
+}
+
+// Print function
+void print(list<CS_Major> major){
+
+    cout << "\n" << setw(16) << "Name" << setw(12) << "Age" << setw(12) << setw(12) << "SSN"<< setw(12) << setw(12) << "StuID" << setw(12) << setw(12) << "GPA" << setw(12) << "Advisor"<< setw(12) << setw(12) << "Laptop#" << endl;
+    cout << setw(16) << "----" << setw(12) << "---" << setw(12) << "---" << setw(12) << "-----" << setw(12) << "---" << setw(12) << "-------" << setw(12) << "-------" << endl;
+    
+    for (auto stu = major.begin(); stu != major.end(); stu++) {
+        cout << setw(16) << stu->getName() << setw(8);
+        cout << setw(12) << stu->getAge() << setw(10);
+        cout << setw(12) << stu->getSsn() << setw(10);
+        cout << setw(12) << stu->getStudentID() << setw(8);
+        cout << setw(12) << stu->getGpa() << setw(8);
+        cout << setw(14) << stu->getAdvisor() << setw(8);
+        cout << setw(10) << stu->getLaptop() << setw(8) << endl;
+    }
+}
+
